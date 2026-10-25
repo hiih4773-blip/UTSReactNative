@@ -16,9 +16,16 @@ export default function Index() {
   const insets = useSafeAreaInsets();
   const [keyword, setKeyword] = useState('');
 
-  const filteredMahasiswa = DAFTAR_MAHASISWA.filter((item) =>
-    item.nama.toLowerCase().includes(keyword.toLowerCase())
-  );
+// Logika pencarian canggih: mendeteksi huruf awal di tiap kata (depan maupun belakang)
+  const filteredMahasiswa = DAFTAR_MAHASISWA.filter((item) => {
+    const searchKey = keyword.toLowerCase().trim();
+    if (!searchKey) return true; // Jika kotak pencarian kosong, tampilkan semua
+
+    // Pecah nama berdasarkan spasi menjadi array kata (misal: ["alifia", "putri"])
+    const words = item.nama.toLowerCase().split(' ');
+    // Cek apakah ada kata (baik depan maupun belakang) yang DIAWALI dengan huruf/kata kunci pencarian
+    return words.some((word) => word.startsWith(searchKey));
+  });
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
